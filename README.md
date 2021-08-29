@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Lab 6 - Developing an end to end Application with AWS
 
 You can use the [editor on GitHub](https://github.com/keerthik26/AmazonPollyNotes/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
