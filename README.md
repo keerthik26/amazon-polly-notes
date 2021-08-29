@@ -233,10 +233,218 @@ In this task, you will create a table in DynamoDB called pollynotes. This table 
 293.  Create a few more items by going through the Create item process again. For example, your next noteId should be , then , and more. The userId should always be . The note can be anything that you would like, but be aware that it will be recited back by Amazon Polly at some point.
 
 #### Task 5: (Java) - Creating Amazon S3 buckets
-          
-You can use the [editor on GitHub](https://github.com/keerthik26/AmazonPollyNotes/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+In this task, you will create three Amazon S3 buckets:
+
+- A website bucket which will host your front end website.
+- An MP3 bucket which will store your MP3 files.
+- A code bucket used to store your Lambda functions as they are uploaded from the AWS ToolKit in Eclipse.
+
+You will only be creating the Amazon S3 buckets in this section and configuring them in a later step.
+
+![lab-6-diagram3-2020](https://user-images.githubusercontent.com/22528198/131250867-061aa2f6-6bc9-4992-886f-5d0d3711f02c.png)
+
+The diagram does not show the Code bucket since it is used to store your Lambda functions only.
+
+294. From the browser tab logged into the **Amazon Management Console**, choose Services and select **Amazon S3**.
+
+You can see that the region is Global. This is because Amazon S3 does not require region selection. However, Amazon S3 creates buckets in a region you specify. When creating your buckets, select the correct region based on what you noted before. If you are unsure of the region, verify the value with your instructor.
+
+##### Task 5.1: (Java) - Create the Web bucket
+
+295. Choose Create bucket
+296. **Bucket name:** enter (all lowercase):
+For example, if your name is John Smith, your bucket name would be polly-notes-web-john-smith.
+297. Make sure that the Region field is set to the appropriate region that you have noted earlier.
+298. Choose Create bucket
+
+##### Task 5.2: (Java) - Create the MP3 bucket
+
+In this task you will create another Amazon S3 bucket to hold the Amazon Polly audio files.
+
+299. Choose Create bucket
+300. **Bucket name:** (all lowercase):
+For example, if your name is John Smith, your bucket name would be polly-notes-mp3-john-smith.
+301. Make sure that the Region field is set to the appropriate region that you have noted earlier.
+302. Choose Create bucket
+
+##### Task 5.3: (Java) - Create the Code bucket
+
+In this task you will create another Amazon S3 bucket to hold the java code.
+
+303. Choose Create bucket
+304. **Bucket name:** (all lowercase):
+For example, if your name is John Smith, your bucket name would be **polly-notes-code-john-smith**.
+305. Make sure the **Region** field is set to the appropriate region that you have noted earlier.
+306. Choose Create bucket
+
+### Task 6: Reviewing an IAM managed policy and creating an IAM role
+
+In this task, you will review an IAM Managed Policy and create an IAM Role to allow your Lambda functions to:
+
+- Perform CRUD operations on DynamoDB.
+- Call the Amazon Polly API.
+- Perform the PUT operation on Amazon S3 for the MP3.
+- Log events to CloudWatch.
+
+![lab-6-diagram3b-2020](https://user-images.githubusercontent.com/22528198/131251277-ea1b9025-cbf2-4967-9cb9-732a62f5a8e0.png)
+
+307. From the browser tab logged into the **Amazon Management Console**, choose Services and select **IAM**.
+
+You can see that the region is Global. IAM does not require region selection because it's a global service.
+
+##### Task 6.1: (Java) - Review an IAM managed policy
+
+308. To save time the **lambda_ddb_s3_polly** managed policy has already been created.
+309.  The policy includes the following permissions:
+
+``` 
+    {
+    "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:UpdateItem",
+        "dynamodb:DescribeTable",
+        "polly:SynthesizeSpeech",
+        "s3:PutObject",
+        "s3:GetObject",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+    ],
+                "Resource": ["*"]
+            }
+        ]
+    }
+```
+
+#### Task 6.2: (Java) - Creating an IAM role
+In this task, you will create an IAM Role called PollyNotesRole and attach the lambda_ddb_s3_polly policy to it. This Role will be used by the Lambda functions in the next sections. This IAM role allows you to delegate access with defined permissions in the above policy to trusted entities without having to hard code your credentials in your code.
+
+310. In the navigation pane, choose **Roles**, and then choose Create role
+311. Under **Select type of trusted entity**, choose **AWS service**.
+312. Go to the **Choose a use case** section. Choose **Lambda**, and then, choose Next: Permissions
+313. In the **Search** field, enter:
+314. Select the **lambda_ddb_s3_polly** policy.
+315. Choose Next: Tags
+316. Choose Next: Review
+317. For **Role name**, enter:
+318. Choose Create role
+
+You should see a message reading:
+
+The role **PollyNotesRole** has been created
+
+### Task 7: (Java) - Creating the Lambda ListFunction
+
+In this task, you will create your Lambda List function. To do this, you edit the *ListFunction.java* file.
+
+![lab-6-diagram4-2020](https://user-images.githubusercontent.com/22528198/131251622-6ec8c899-b773-4410-a693-d6e1110df2db.png)
+
+#### Task 7.1: (Java) - Getting to the ListFunction code
+
+319. Return to the **Windows Dev Instance**.
+
+To test, complete the following steps:
+- Open the file *ListFunctionTest.java* located in the package.
+- Inspect the code of the test, which will make you realize that you are making a call to the CreateUpdateFunctionSolution function. Since this is a ListFunction, you need to make sure that there is data in the DynamoDB table. First thing to do is to create an item. Then, run your freshly coded ListFunction and make sure that the that is returned isn't empty.
+- Run the test.
+- You should see the output of the CreateUpdateFunctionSolution and then the beginning of your function in the Console View. If the Test successfully completes, the JUnit view should be all green. You can continue troubleshooting by using breakpoints and running the prior step again.
+
+```
+Initiating PollyNotes-CreateUpdateFunction...
+Note received: {userId: "testuser", noteId: "001", note: "This is a test"}
+Returning noteId: "001"
+Initiating PollyNotes-ListFunction...
+```
+Task 7.3: (Java) - Upload Your ListFunction to Lambda
+
+In this task, you upload your Lambda function to Lambda. To do so, you will use the AWS ToolKit that has been installed in Eclipse. This simplifies the process instead of having to use the command line. What is done in the background is for you is to create a ZIP of your code, uploading it to your code Amazon S3 bucket, creating the Lambda function by using the ZIP, and associating the IAM Role you created earlier.
+
+331. In the Project Explorer, open the context menu for the folder and select Amazon Web Services >> Upload function to AWS Lambda...
+332. For Select the Handler, complete one of the following:
+- If you have coded your function, select .
+- If you want to use the Solution Code, select .
+
+333. For Select the AWS Region, select the region for your lab as you noted it before.
+334. Select **Create a new Lambda function** and replace the value of the field next to it (containing MyFunction) with .
+335. Choose **Next**
+336. For **IAM Role**, select .
+337. For **S3 Bucket**, select your code Amazon S3 Bucket: 
+338. In the **Memory (MB)** field, replace the content with **1024** so that your Lambda function can start faster on the first load.
+339. Choose **Finish**
+
+You have now uploaded your Lambda function!
+
+340. The next step is to test the Lambda function from the Lambda UI.
+341. From the **AWS Console**, choose Services and select **Lambda**.
+
+This lab uses the Updated Lambda Console. If you are unsure which version you are using, simply choose the icon in the top-left corner of the Lambda console and it will indicate if the **Update Lambda Console option** is on or off. If it shows **off**, select the toggle option to turn it on.
+
+342. Choose **PollyNotes-ListFunction**. If you don't see your function, make sure that you are in the correct Region.
+343. Choose the **Test** tab and make the following selections under Test event:
+        
+
+### Task 8: (Java) - Creating the API Gateway
+
+In this task, you will create a Restful API to front the back-end Lambda function. The API will use Amazon Cognito identities for authentication. For the application, you will be using the AWS API Gateway Service.
+
+![lab-6-diagram5-2020](https://user-images.githubusercontent.com/22528198/131251981-5c13bee7-7f47-4bb0-a852-68c79a88e95c.png)
+
+
+#### Task 8.1: (Java) - Creating the Amazon Cognito Authorizer
+
+In this task, you create the Amazon Cognito Authorizer. The Authorizer will allow you to control access to the API with the Amazon Cognito User Pool.
+
+#### Task 8.2: (Java) - Creating the resources
+
+In this task, you create your API Resources.
+
+#### Task 8.3: (Java) - Creating the API GET method
+
+### Task 9: (Java) - Creating the front-end website
+
+### Task 10: (Java) - Testing the web application
+
+<img width="947" alt="pollynotes-loginpage" src="https://user-images.githubusercontent.com/22528198/131252081-16d9abe0-d29f-48a0-aa4f-9db65857c037.png">
+
+You should be presented with a page that looks like the following:
+
+<img width="947" alt="pollynotes-loginpage" src="https://user-images.githubusercontent.com/22528198/131252121-b08d611e-a1b3-4789-8320-877600be8100.png">
+
+### Task 11: (Java) - Creating the remaining Lambda functions
+
+
+![lab-6-diagram6-2020](https://user-images.githubusercontent.com/22528198/131252165-72a5a6a8-002c-4ad8-81af-41e5ac552bbe.png)
+
+#### Task 11.1: (Java) - Creating the Lambda DictateFunction
+
+In this task, you work with the Lambda DictateFunction. This function is already completely coded for you due to the length of this lab. This is why you will not find Solution Code for Dictate.
+
+#### Task 11.2: (Java) - Creating the Lambda CreateUpdateFunction
+
+#### Task 11.3: (Java) - Creating the Lambda SearchFunction
+
+#### Task 11.4: (Java) - Creating the Lambda DeleteFunction
+
+
+### Task 12: (Java) - Creating the remaining Restful API
+
+In this task, you create the remaining Restful API.
+
+![lab-6-diagram-2020](https://user-images.githubusercontent.com/22528198/131252279-3ea1752f-a912-4ecb-8b33-0da869868245.png)
+
+SWAGGER
+
+### Task 13: (Java) - Testing the web application
+
+
 
 ### Markdown
 
