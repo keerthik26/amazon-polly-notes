@@ -73,7 +73,7 @@ After completing this lab, you will be able to:
 
 ### Start Lab
 
-#### Task 1: Connect to your development environment
+### Task 1: Connect to your development environment
 
 This lab is to be completed using the Windows Dev Instance for the .NET and the Java versions of the lab.
 
@@ -88,11 +88,11 @@ For now, connect to the Windows Dev Instance using one of the following options 
 
 When lab instructions in subsequent sections require a command window, use a **PowerShell** session.
 
-#### Task 2: Choose a programming language
+### Task 2: Choose a programming language
 
 4. Choose the programming language you would like to use for this lab. You can use the .NET, Java, or Python.
 
-#### Task 3: (Java) - Amazon Cognito Authentication
+### Task 3: (Java) - Amazon Cognito Authentication
 
 The AWS SDK for Java simpliﬁes use of AWS Services by providing a set of libraries that are consistent and familiar for Java developers.
 
@@ -157,7 +157,7 @@ For example, in the Oregon region, the **Pool Id** would look like **us-west-2_X
 262. In the navigation pane on the left, under **General settings**, choose **App clients**.
 263. Save the **App client id** in the form of xxxxxxxxxxxxxxxxxxxxxxxxxx information into the same file. Make sure to note that it is for the **Amazon Cognito App client id**.
 
-##### Task 3.2: (Java) - Creating a user for the Amazon Cognito user pool
+#### Task 3.2: (Java) - Creating a user for the Amazon Cognito user pool
 
 In this task, you will create and confirm an Amazon Cognito user by using the Linux Dev Instance. The Amazon Cognito user is used to test the end to end application.
 
@@ -207,7 +207,7 @@ Congratulations! You have successfully created an Amazon Cognito User Pool, manu
 
 Normally, the sign-up process would be done via the application. However, the application that you are using doesn't provide such a function. So instead, it is manually created.
 
-#### Task 4: (Java) - Creating a DynamoDB table
+### Task 4: (Java) - Creating a DynamoDB table
 
 In this task, you will create a table in DynamoDB called **pollynotes**. This table is going to be used to store your user id, along with your notes.
 
@@ -233,7 +233,7 @@ In this task, you will create a table in DynamoDB called **pollynotes**. This ta
 292. Choose **Save**
 293.  Create a few more items by going through the Create item process again. For example, your next **noteId** should be ``002``, then ``003``, and more. The **userId** should always be ``testuser``. The **note** can be anything that you would like, but be aware that it will be recited back by Amazon Polly at some point.
 
-#### Task 5: (Java) - Creating Amazon S3 buckets
+### Task 5: (Java) - Creating Amazon S3 buckets
 
 In this task, you will create three Amazon S3 buckets:
 
@@ -251,7 +251,7 @@ You will only be creating the Amazon S3 buckets in this section and configuring 
 
 ⚠️You can see that the region is Global. This is because Amazon S3 does not require region selection. However, Amazon S3 creates buckets in a region you specify. When creating your buckets, select the correct region based on what you noted before. If you are unsure of the region, verify the value with your instructor.
 
-##### Task 5.1: (Java) - Create the Web bucket
+#### Task 5.1: (Java) - Create the Web bucket
 
 295. Choose **Create bucket**
 296. **Bucket name:** enter (all lowercase):``polly-notes-web-<firstname>-<lastname>``
@@ -259,7 +259,7 @@ You will only be creating the Amazon S3 buckets in this section and configuring 
 297. Make sure that the **Region** field is set to the appropriate region that you have noted earlier.
 298. Choose Create bucket
 
-##### Task 5.2: (Java) - Create the MP3 bucket
+#### Task 5.2: (Java) - Create the MP3 bucket
 
 In this task you will create another Amazon S3 bucket to hold the Amazon Polly audio files.
 
@@ -269,7 +269,7 @@ For example, if your name is John Smith, your bucket name would be **polly-notes
 301. Make sure that the Region field is set to the appropriate region that you have noted earlier.
 302. Choose Create bucket
 
-##### Task 5.3: (Java) - Create the Code bucket
+#### Task 5.3: (Java) - Create the Code bucket
 
 In this task you will create another Amazon S3 bucket to hold the java code.
 
@@ -360,7 +360,7 @@ In this task, you will create your Lambda List function. To do this, you edit th
 
 
 
-### Task 7.2: (Java) - Coding the ListFunction
+#### Task 7.2: (Java) - Coding the ListFunction
 
 329. It is now time for you to code! You will need to edit the _ListFunction.java_. If you would rather not code and just use the Solution file, skip to ![Task 7.3: Upload Your ListFunction to Lambda]().
 
@@ -427,7 +427,7 @@ Returning noteId: "001"
 Initiating PollyNotes-ListFunction...
 ```
 
-### Task 7.3: (Java) - Upload Your ListFunction to Lambda
+#### Task 7.3: (Java) - Upload Your ListFunction to Lambda
 
 In this task, you upload your Lambda function to Lambda. To do so, you will use the AWS ToolKit that has been installed in Eclipse. This simplifies the process instead of having to use the command line. What is done in the background is for you is to create a ZIP of your code, uploading it to your code Amazon S3 bucket, creating the Lambda function by using the ZIP, and associating the IAM Role you created earlier.
 
@@ -966,34 +966,3 @@ You can obtain your Amazon S3 Hosted URL by going into the Amazon S3 Console. Se
 - If you find any that read as, **arn:aws:lambda:us-west-2:012345678901:function:Mock/invocation**, go back and update those methods to the correct Lambda Function name.
 - In case of errors, correct the code and run the test again.
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/keerthik26/AmazonPollyNotes/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
