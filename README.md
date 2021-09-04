@@ -412,27 +412,164 @@ In this task, you create your API Resources.
 
 ### Task 10: (Java) - Testing the web application
 
+In this task, you test the web application by loading your Amazon S3 Hosted URL.
+
+You can obtain your Amazon S3 Hosted URL by going into the Amazon S3 Console. Select your web hosting bucket. Choose the **Properties** tab, and then choose, **Static website hosting**.
+
+417. In a browser, enter your Static website hosting URL.
+418. You should be presented with a login page.
+
 <img width="947" alt="pollynotes-loginpage" src="https://user-images.githubusercontent.com/22528198/131252081-16d9abe0-d29f-48a0-aa4f-9db65857c037.png">
 
-You should be presented with a page that looks like the following:
+419. Login with the following:
+- For **UserName**, enter: 
+- For **Password**, enter: 
+
+420. You should be presented with a page that looks like the following:
 
 <img width="947" alt="pollynotes-loginpage" src="https://user-images.githubusercontent.com/22528198/131252121-b08d611e-a1b3-4789-8320-877600be8100.png">
 
+You should expect to see the notes you created earlier. All other functionality, such as adding notes, updating, deleting, or playing will not work. You need to create the API methods and Lambda functions to enable this functionality.
+
 ### Task 11: (Java) - Creating the remaining Lambda functions
 
+Now that the ListFunction is working end-to-end, you need to create the rest of the application. Having a list of the notes is great, but if you can't Create, Update, Delete and Dictate, the application isn't doing much.
 
 ![lab-6-diagram6-2020](https://user-images.githubusercontent.com/22528198/131252165-72a5a6a8-002c-4ad8-81af-41e5ac552bbe.png)
+
+Download the following ZIP file to your laptop: ![PollyNotes-JavaSolutionFunctions]().
 
 #### Task 11.1: (Java) - Creating the Lambda DictateFunction
 
 In this task, you work with the Lambda DictateFunction. This function is already completely coded for you due to the length of this lab. This is why you will not find Solution Code for Dictate.
 
+This lab uses the **Updated Lambda Console**.
+
+422. From the browser tab logged into the **Amazon Management Console**, choose Services and select **Lambda**.
+
+436. Replace the JSON payload with the following: (492)
+``
+{
+    "voiceId": "Russell",
+    "note": {
+        "userId": "testuser",
+        "noteId": "001"
+    }
+}
+``
+439. Choose the **Details** link under that text. You should see the output of your Lambda function providing a very long URL to your MP3 bucket which represents a pre-signed URL.
+
+For example:
+``
+"https://polly-notes-mp3-<firstname>-<lastname>.s3.amazonaws.com/testuser/001.mp3?X-Amz-Security-Token=..."
+``
+
+440. Copy and paste that URL in your browser. It will have you download an mp3. Open the file to listen to Russell dictating your note!
+
+Congratulations! You have now created your Lambda Dictate function.
+
+
 #### Task 11.2: (Java) - Creating the Lambda CreateUpdateFunction
+
+455. Replace the JSON payload with the following: (492)
+
+``
+{
+    "userId": "testuser",
+    "noteId": "001",
+    "note": "My very new note to myself"
+}
+``
+
+458. Choose the **Details** link under that text. You should see the output of your Lambda function providing the noteId that you just uploaded. For example, 
+
+Congratulations! You have now created your Lambda CreateUpdate function.
 
 #### Task 11.3: (Java) - Creating the Lambda SearchFunction
 
+473. Replace the JSON payload with the following: (492)
+
+``
+{
+    "userId": "testuser",
+    "note": "very"
+}
+``
+
+476. Choose the **Details** link under that text. (495)
+
+You should see the output of your Lambda function listing a the note you just searched for using the keyword that was just created in your previous CreateUpdateFunction.
+
+``
+[
+    {
+        "userId": "testuser",
+        "noteId": "001",
+        "note": "My very new note to myself"
+    }
+]
+``
+Congratulations! You have now created your LambdaSearch function.
+
+
 #### Task 11.4: (Java) - Creating the Lambda DeleteFunction
 
+477. Choose the Functions bread crumb at the top of the page.
+478. Choose **Create function** and make the following updates:
+
+- **Author from scratch**
+- **Function name:**
+- **Runtime:**
+- **Permissions:**
+    - Expand **Change default execution role.**
+    - **Execution role:**
+    - **Existing role:**
+
+479. Choose **Create function**
+
+*The lambda function page will be displayed with your function configuration.*
+
+480. In the **Code source** section, choose Upload from , select **Upload a .zip or .jar file**, and then choose the Upload button. Locate the *PollyNotes-JavaSolutionFunctions.zip* file that you downloaded in the previous section and choose Save
+481. Scroll down to the **Runtime settings** card, choose Edit and enter the following details:
+- **Handler:**
+482. Choose Save
+483. Choose the **Configuration** tab.
+484. Choose **Environment variables** from the options on the left and then choose Edit
+485. Choose Add environment variable
+486. Add the following values:
+
+  - **Key:**
+  - **Value:** (Update with your bucket name.)
+ 
+487. Choose Save
+488. Choose **General configuration** from the list on the left, then choose Edit and make the following update:
+ - **Memory (MB):** (so that your Lambda function can start faster on the first load)
+489. Choose Save
+490. Now test the function. Choose the **Test** tab and configure the following fields under **Test event**:
+
+- X
+- **Template**:
+- **Name**:
+
+492. Replace the JSON payload with the following:
+
+``
+{
+    "userId": "testuser",
+    "noteId": "001"
+}
+``
+493. Choose Save changes
+494. Choose Test
+
+*It is normal for it to take a little longer as this is the first time you are running your Lambda function.*
+
+*There should be a green check mark just under the name of your Lambda function name on the left side of the screen with text mentioning: Execution result: succeeded (logs).*
+
+495. Choose the **Details** link under that text. 
+
+You should see the output of your Lambda function providing the noteId that you just deleted. For example, .
+ 
 
 ### Task 12: (Java) - Creating the remaining Restful API
 
@@ -440,11 +577,83 @@ In this task, you create the remaining Restful API.
 
 ![lab-6-diagram-2020](https://user-images.githubusercontent.com/22528198/131252279-3ea1752f-a912-4ecb-8b33-0da869868245.png)
 
-SWAGGER
+496. From the browser tab logged into the **Amazon Management Console**, choose Services and select **API Gateway**.
+497. Choose **PollyNotesAPI.**
+498. Choose the **/notes/GET** method.
+499. Choose **Integration Request**
+500. Navigate to the bottom and expand **Mapping Templates**.
+501. Choose **application/json**.
+502. Move down and replace the mapping template with the following:
+``
+{
+    "userId": "$context.authorizer.claims.sub"
+}
+``
+*You are now removing the hard coded value of testuser to a variable that is dynamically populated based on your authorizer. In this case, the authorizer is Amazon Cognito. This means, userId will now be set to the value of the Amazon Cognito ID of the user login.*
+
+503. Choose Save
+504. Download the following Swagger file (API-Gateway-for-students-swagger.yaml):
+
+ Source file: ![SWAGGER]()
+ 
+505. Modify **line 11** of the file to replace it with your **Amazon Cognito User Pool ARN** (in between the quotes "").
+506. **Save** the file.
+507. Choose Actions and select **Import API**.
+508. Navigate to the bottom of the page and change the **Import mode** to **Merge**.
+
+Be mindful not to select .
+
+509. Choose Select Swagger File and then select your saved Swagger file.
+510. Choose Import
+
+*The Swagger file created the additional resources and methods for your API. You still need to integrate the Methods with your Lambda functions.*
+
+511. Choose the /notes/POST method.
+
+*If you encounter an error reading, You do not have permission to perform this action. you can ignore it.*
+
+*The reason for this error is due to the swagger file specifying a mock function from another region. API Gateway tries to pull it up and returns the error because you do not have permissions to that region.*
+
+512. Choose **Integration Request**
+513. For **Lambda Region**, choose (edit).
+514. Select your **Lambda Region** based on what you have noted before and then, choose (check mark tick).
+515. For **Lambda Function**, type P and then select **PollyNotes-CreateUpdateFunction**. Choose (check mark tick).
+516. In the **Add Permission to Lambda Function** dialog box, make sure the Lambda function reflects the correct name.
+
+- If the name is correct, choose **OK** to accept and allow invocation permissions to be created and your trigger to be setup.
+- If it reads as the **Mock** function name, we have to do a couple additional steps to workaround this UI issue.
+- - Choose **OK**.
+- - Choose **Resources** link on the left to leave that section.
+- - Next choose the appropriate method and select **Integration Request** and repeat the instructions as normal.
+- - You should see that the region is set correctly but the **Lambda Function** is pointing to **arn:aws:lambda:us-west-2:012345678901:function:Mock** and needs to be updated.
+- - There appears to be a bug with the API Gateway UI that causes this issue. It should be resolved soon. Until then, this is the workaround.
+
+517. Repeat these steps for the remaining methods with the following mappings:
+
+- **/search/GET** PollyNotes-SearchFunction
+- **/{id}/DELETE** PollyNotes-DeleteFunction
+- **/{id}/POST** PollyNotes-DictateFunction
+
+Once you have completed the steps for each of the above methods, complete the following:
+
+- Choose Actions and select **Deploy API**.
+- Select the **prod** stage, and then choose **Deploy**.
+
+Your API should now be fully functional.
+
 
 ### Task 13: (Java) - Testing the web application
 
+In this task, you test the web application by loading your Amazon S3 Hosted URL.
 
+You can obtain your Amazon S3 Hosted URL by going into the Amazon S3 Console. Select your web hosting bucket. Choose the **Properties** tab, and then, choose **Static website hosting**.
+
+518. Test the application by exploring the functionality of the site. Test the add, delete, update, and search functions. Test that the voice options work correctly.
+
+*Should you receive a backend server error, revisit the method integration steps and ensure the Lambda Function value is set correctly.*
+
+- If you find any that read as, **arn:aws:lambda:us-west-2:012345678901:function:Mock/invocation**, go back and update those methods to the correct Lambda Function name.
+- In case of errors, correct the code and run the test again.
 
 ### Markdown
 
