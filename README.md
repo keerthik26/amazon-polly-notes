@@ -350,12 +350,74 @@ In this task, you will create your Lambda List function. To do this, you edit th
 #### Task 7.1: (Java) - Getting to the ListFunction code
 
 319. Return to the **Windows Dev Instance**.
+320. The PollyNotes project contains a few packages that are worth understanding for coding your ListFunction:
+
+   - You will be editing the *ListFunction.java* file. In the Project Explorer, expand: and you will find the *ListFunction.java* file there. This is the file that you will do all of your development in.
+   - Under , the **com.amazonaws.pollynotes.pojo** package contains POJO classes that are used to receive the data in the handler for Lambda. The Note will also be used to use the Object Persistence Model for DynamoDB so you can do simple operations on the Note POJO which already contains Java Annotations mapping each attributes to the object. It is worth taking a look at it to understand what was done.
+   - Under , the **com.amazonaws.pollynotes.solution** package contains the Solution files to all of the four functions you will be creating. Note that the DictateFunction is already built hence why it doesn't have a solution. You can refer to the solution if you get stuck. Although the code of those functions looks fairly long, it is only due to the amount of logging done in the function. The actual code is only a few lines.
+   - Under , the **com.amazonaws.pollynotes** package contains JUnit test cases that you can use to validate that the functions you create works. This will help you test your functions locally without having to upload them to Lambda.
+
+
+
+### Task 7.2: (Java) - Coding the ListFunction
+
+329. It is now time for you to code! You will need to edit the ListFunction.java. If you would rather not code and just use the Solution file, skip to ![Task 7.3: Upload Your ListFunction to Lambda]().
+
+Your goal is to develop a Lambda function that will receive a userId as an input and return a list of Note objects.
+
+Java is a strong type language which means that receiving JSON isn't as easy to parse as some other languages. Instead, Lambda and Java work together to deserialize the JSON payload into an object.
+
+The input from Lambda will look similar to the following:
+
+```
+{
+    "userId": "testuser"
+}
+
+```
+   - It may look difficult to parse at first glance, however the Lambda Java core will do the work for you by serializing this JSON into a Note object that will have its userId property set and that you receive as an argument to your Lambda function as you can see in the function you need to develop below.
+
+```
+public List<Note> handleRequest(Note note, Context context) ...
+
+```
+   - The output that Lambda is an array of Note that should be similar to the following. This may sound like a challenge to return this kind of data. However, by returning a , the Lambda Java core will serialize the list of Note and output the above JSON data.
+    
+```
+  [
+    {
+        "userId": "testuser",
+        "noteId": "001",
+        "note": "My note to myself"
+    },
+    {
+        "userId": "testuser",
+        "noteId": "002",
+        "note": "My new note to myself"
+    }
+  ]
+    
+````
+    
+   - There are comments in the code to give you some help. However, it is your responsibility to make good use of those comments or to do it on your own. There are many ways to Query DynamoDB and the Solution Code makes use of the Object Persistence Model that was discussed in the class. You should take a look at the following:
+    - Query and Scan
+    - Query
+
+   - Overall, the work you have to do is to query DynamoDB to find all of the notes of the userId based on the note argument and return a based on the response of your query. Good luck and remember that there is always a Solution file that can help you out! Once you think you have something working or would like to test things out, follow the next steps.
+
+330. To test your code locally instead of having to upload your code to Lambda and invoke it from there, you will run a JUnit test. This will simulate a call to your Lambda handler with the userId . Even though this test runs locally, it's only your Lambda function that runs locally, your code is making an actual call to DynamoDB.
+
 
 To test, complete the following steps:
-- Open the file *ListFunctionTest.java* located in the package.
+    
+- Open the file **ListFunctionTest.java** located in the package.
+    
 - Inspect the code of the test, which will make you realize that you are making a call to the CreateUpdateFunctionSolution function. Since this is a ListFunction, you need to make sure that there is data in the DynamoDB table. First thing to do is to create an item. Then, run your freshly coded ListFunction and make sure that the that is returned isn't empty.
+    
 - Run the test.
-- You should see the output of the CreateUpdateFunctionSolution and then the beginning of your function in the Console View. If the Test successfully completes, the JUnit view should be all green. You can continue troubleshooting by using breakpoints and running the prior step again.
+    - Open the context menu for the ListFunctionTest.java file.
+    - Select **Debug As > JUnit Test**.
+- You should see the output of the *CreateUpdateFunctionSolution* and then the beginning of your function in the Console View. If the Test successfully completes, the JUnit view should be all green. You can continue troubleshooting by using breakpoints and running the prior step again.
 
 ```
 Initiating PollyNotes-CreateUpdateFunction...
@@ -363,16 +425,20 @@ Note received: {userId: "testuser", noteId: "001", note: "This is a test"}
 Returning noteId: "001"
 Initiating PollyNotes-ListFunction...
 ```
-Task 7.3: (Java) - Upload Your ListFunction to Lambda
+
+### Task 7.3: (Java) - Upload Your ListFunction to Lambda
 
 In this task, you upload your Lambda function to Lambda. To do so, you will use the AWS ToolKit that has been installed in Eclipse. This simplifies the process instead of having to use the command line. What is done in the background is for you is to create a ZIP of your code, uploading it to your code Amazon S3 bucket, creating the Lambda function by using the ZIP, and associating the IAM Role you created earlier.
 
-331. In the Project Explorer, open the context menu for the folder and select Amazon Web Services >> Upload function to AWS Lambda...
-332. For Select the Handler, complete one of the following:
-- If you have coded your function, select .
-- If you want to use the Solution Code, select .
+331. In the Project Explorer, open the context menu for the folder and select **Amazon Web Services >> Upload function to AWS Lambda...**
 
-333. For Select the AWS Region, select the region for your lab as you noted it before.
+332. For **Select the Handler**, complete one of the following:
+
+   - If you have coded your function, select .
+   - If you want to use the Solution Code, select .
+
+333. For **Select the AWS Region**, select the region for your lab as you noted it before.
+
 334. Select **Create a new Lambda function** and replace the value of the field next to it (containing MyFunction) with .
 335. Choose **Next**
 336. For **IAM Role**, select .
@@ -385,11 +451,44 @@ You have now uploaded your Lambda function!
 340. The next step is to test the Lambda function from the Lambda UI.
 341. From the **AWS Console**, choose Services and select **Lambda**.
 
-This lab uses the Updated Lambda Console. If you are unsure which version you are using, simply choose the icon in the top-left corner of the Lambda console and it will indicate if the **Update Lambda Console option** is on or off. If it shows **off**, select the toggle option to turn it on.
+This lab uses the **Updated Lambda Console**. If you are unsure which version you are using, simply choose the icon in the top-left corner of the Lambda console and it will indicate if the **Update Lambda Console option** is on or off. If it shows **off**, select the toggle option to turn it on.
 
 342. Choose **PollyNotes-ListFunction**. If you don't see your function, make sure that you are in the correct Region.
-343. Choose the **Test** tab and make the following selections under Test event:
-        
+343. Choose the **Test** tab and make the following selections under **Test event:**
+
+   - .
+   - **Template:**
+   - **Event name**, enter:
+   - Replace the JSON payload with the following:
+
+    ```
+    {
+    "userId": "testuser"
+    }
+    
+    ```
+    
+344. Choose Save Changes
+345. Choose Test
+346. There should be a green check mark just under the name of your Lambda function name with the message Execution result: succeeded (logs). Choose **Details** and you should see the output of your Lambda function listing a few notes that you have created in the DynamoDB section.
+
+For example:
+
+```
+[
+    {
+        "userId": "testuser",
+        "noteId": "001",
+        "note": "My note to myself"
+    },
+    {
+        "userId": "testuser",
+        "noteId": "002",
+        "note": "My new note to myself"
+    }
+]
+```
+
 
 ### Task 8: (Java) - Creating the API Gateway
 
@@ -682,18 +781,18 @@ Congratulations! You have now created your Lambda CreateUpdate function.
 
 473. Replace the JSON payload with the following: (492)
 
-``
+```
 {
     "userId": "testuser",
     "note": "very"
 }
-``
+```
 
 476. Choose the **Details** link under that text. (495)
 
 You should see the output of your Lambda function listing a the note you just searched for using the keyword that was just created in your previous CreateUpdateFunction.
 
-``
+```
 [
     {
         "userId": "testuser",
@@ -701,7 +800,7 @@ You should see the output of your Lambda function listing a the note you just se
         "note": "My very new note to myself"
     }
 ]
-``
+```
 Congratulations! You have now created your LambdaSearch function.
 
 
