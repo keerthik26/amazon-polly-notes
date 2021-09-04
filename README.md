@@ -245,18 +245,18 @@ You will only be creating the Amazon S3 buckets in this section and configuring 
 
 ![lab-6-diagram3-2020](https://user-images.githubusercontent.com/22528198/131250867-061aa2f6-6bc9-4992-886f-5d0d3711f02c.png)
 
-The diagram does not show the Code bucket since it is used to store your Lambda functions only.
+🟧The diagram does not show the Code bucket since it is used to store your Lambda functions only.
 
-294. From the browser tab logged into the **Amazon Management Console**, choose Services and select **Amazon S3**.
+294. From the browser tab logged into the **Amazon Management Console**, choose **Services** and select **Amazon S3**.
 
-You can see that the region is Global. This is because Amazon S3 does not require region selection. However, Amazon S3 creates buckets in a region you specify. When creating your buckets, select the correct region based on what you noted before. If you are unsure of the region, verify the value with your instructor.
+⚠️You can see that the region is Global. This is because Amazon S3 does not require region selection. However, Amazon S3 creates buckets in a region you specify. When creating your buckets, select the correct region based on what you noted before. If you are unsure of the region, verify the value with your instructor.
 
 ##### Task 5.1: (Java) - Create the Web bucket
 
-295. Choose Create bucket
-296. **Bucket name:** enter (all lowercase):
-For example, if your name is John Smith, your bucket name would be polly-notes-web-john-smith.
-297. Make sure that the Region field is set to the appropriate region that you have noted earlier.
+295. Choose **Create bucket**
+296. **Bucket name:** enter (all lowercase):``polly-notes-web-<firstname>-<lastname>``
+🟧For example, if your name is John Smith, your bucket name would be _polly-notes-web-john-smith_.
+297. Make sure that the **Region** field is set to the appropriate region that you have noted earlier.
 298. Choose Create bucket
 
 ##### Task 5.2: (Java) - Create the MP3 bucket
@@ -264,8 +264,8 @@ For example, if your name is John Smith, your bucket name would be polly-notes-w
 In this task you will create another Amazon S3 bucket to hold the Amazon Polly audio files.
 
 299. Choose Create bucket
-300. **Bucket name:** (all lowercase):
-For example, if your name is John Smith, your bucket name would be polly-notes-mp3-john-smith.
+300. **Bucket name:** (all lowercase):``polly-notes-mp3-<firstname>-<lastname>``
+For example, if your name is John Smith, your bucket name would be **polly-notes-mp3-john-smith**.
 301. Make sure that the Region field is set to the appropriate region that you have noted earlier.
 302. Choose Create bucket
 
@@ -274,7 +274,7 @@ For example, if your name is John Smith, your bucket name would be polly-notes-m
 In this task you will create another Amazon S3 bucket to hold the java code.
 
 303. Choose Create bucket
-304. **Bucket name:** (all lowercase):
+304. **Bucket name:** (all lowercase):``polly-notes-code-<firstname>-<lastname>``
 For example, if your name is John Smith, your bucket name would be **polly-notes-code-john-smith**.
 305. Make sure the **Region** field is set to the appropriate region that you have noted earlier.
 306. Choose Create bucket
@@ -292,9 +292,9 @@ In this task, you will review an IAM Managed Policy and create an IAM Role to al
 
 307. From the browser tab logged into the **Amazon Management Console**, choose Services and select **IAM**.
 
-You can see that the region is Global. IAM does not require region selection because it's a global service.
+⚠️You can see that the region is Global. IAM does not require region selection because it's a global service.
 
-##### Task 6.1: (Java) - Review an IAM managed policy
+#### Task 6.1: (Java) - Review an IAM managed policy
 
 308. To save time the **lambda_ddb_s3_polly** managed policy has already been created.
 309.  The policy includes the following permissions:
@@ -326,17 +326,17 @@ You can see that the region is Global. IAM does not require region selection bec
 ```
 
 #### Task 6.2: (Java) - Creating an IAM role
-In this task, you will create an IAM Role called PollyNotesRole and attach the lambda_ddb_s3_polly policy to it. This Role will be used by the Lambda functions in the next sections. This IAM role allows you to delegate access with defined permissions in the above policy to trusted entities without having to hard code your credentials in your code.
+In this task, you will create an IAM Role called **PollyNotesRole** and attach the **lambda_ddb_s3_polly** policy to it. This Role will be used by the Lambda functions in the next sections. This IAM role allows you to delegate access with defined permissions in the above policy to trusted entities without having to hard code your credentials in your code.
 
-310. In the navigation pane, choose **Roles**, and then choose Create role
+310. In the navigation pane, choose **Roles**, and then choose **Create role**
 311. Under **Select type of trusted entity**, choose **AWS service**.
-312. Go to the **Choose a use case** section. Choose **Lambda**, and then, choose Next: Permissions
-313. In the **Search** field, enter:
+312. Go to the **Choose a use case** section. Choose **Lambda**, and then, choose **Next: Permissions**
+313. In the **Search** field, enter:``lambda_ddb_s3_polly``
 314. Select the **lambda_ddb_s3_polly** policy.
-315. Choose Next: Tags
-316. Choose Next: Review
-317. For **Role name**, enter:
-318. Choose Create role
+315. Choose **Next: Tags**
+316. Choose **Next: Review**
+317. For **Role name**, enter:``PollyNotesRole``
+318. Choose **Create role**
 
 You should see a message reading:
 
@@ -353,7 +353,7 @@ In this task, you will create your Lambda List function. To do this, you edit th
 319. Return to the **Windows Dev Instance**.
 320. The PollyNotes project contains a few packages that are worth understanding for coding your ListFunction:
 
-   - You will be editing the *ListFunction.java* file. In the Project Explorer, expand: and you will find the *ListFunction.java* file there. This is the file that you will do all of your development in.
+   - You will be editing the *ListFunction.java* file. In the Project Explorer, expand``src\main``: and you will find the *ListFunction.java* file there. This is the file that you will do all of your development in.
    - Under , the **com.amazonaws.pollynotes.pojo** package contains POJO classes that are used to receive the data in the handler for Lambda. The Note will also be used to use the Object Persistence Model for DynamoDB so you can do simple operations on the Note POJO which already contains Java Annotations mapping each attributes to the object. It is worth taking a look at it to understand what was done.
    - Under , the **com.amazonaws.pollynotes.solution** package contains the Solution files to all of the four functions you will be creating. Note that the DictateFunction is already built hence why it doesn't have a solution. You can refer to the solution if you get stuck. Although the code of those functions looks fairly long, it is only due to the amount of logging done in the function. The actual code is only a few lines.
    - Under , the **com.amazonaws.pollynotes** package contains JUnit test cases that you can use to validate that the functions you create works. This will help you test your functions locally without having to upload them to Lambda.
@@ -362,7 +362,7 @@ In this task, you will create your Lambda List function. To do this, you edit th
 
 ### Task 7.2: (Java) - Coding the ListFunction
 
-329. It is now time for you to code! You will need to edit the ListFunction.java. If you would rather not code and just use the Solution file, skip to ![Task 7.3: Upload Your ListFunction to Lambda]().
+329. It is now time for you to code! You will need to edit the _ListFunction.java_. If you would rather not code and just use the Solution file, skip to ![Task 7.3: Upload Your ListFunction to Lambda]().
 
 Your goal is to develop a Lambda function that will receive a userId as an input and return a list of Note objects.
 
@@ -382,7 +382,7 @@ The input from Lambda will look similar to the following:
 public List<Note> handleRequest(Note note, Context context) ...
 
 ```
-   - The output that Lambda is an array of Note that should be similar to the following. This may sound like a challenge to return this kind of data. However, by returning a , the Lambda Java core will serialize the list of Note and output the above JSON data.
+   - The output that Lambda is an array of Note that should be similar to the following. This may sound like a challenge to return this kind of data. However, by returning a ``List<Note>``, the Lambda Java core will serialize the list of Note and output the above JSON data.
     
 ```
   [
@@ -401,24 +401,24 @@ public List<Note> handleRequest(Note note, Context context) ...
 ```
     
    - There are comments in the code to give you some help. However, it is your responsibility to make good use of those comments or to do it on your own. There are many ways to Query DynamoDB and the Solution Code makes use of the Object Persistence Model that was discussed in the class. You should take a look at the following:
-    - Query and Scan
+    - [Query and Scan](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBMapper.QueryScanExample.html)
     - Query
 
-   - Overall, the work you have to do is to query DynamoDB to find all of the notes of the userId based on the note argument and return a based on the response of your query. Good luck and remember that there is always a Solution file that can help you out! Once you think you have something working or would like to test things out, follow the next steps.
+   - Overall, the work you have to do is to query DynamoDB to find all of the notes of the userId based on the **note** argument and return a ``List<Note>``based on the response of your query. Good luck and remember that there is always a Solution file that can help you out! Once you think you have something working or would like to test things out, follow the next steps.
 
-330. To test your code locally instead of having to upload your code to Lambda and invoke it from there, you will run a JUnit test. This will simulate a call to your Lambda handler with the userId . Even though this test runs locally, it's only your Lambda function that runs locally, your code is making an actual call to DynamoDB.
+330. To test your code locally instead of having to upload your code to Lambda and invoke it from there, you will run a JUnit test. This will simulate a call to your Lambda handler with the userId ``testuser``. Even though this test runs locally, it's only your Lambda function that runs locally, your code is making an actual call to DynamoDB.
 
 
 To test, complete the following steps:
     
-- Open the file **ListFunctionTest.java** located in the package.
+- Open the file **ListFunctionTest.java** located in the ``src/test/java > com.amazonaws.pollynotes`` package.
     
-- Inspect the code of the test, which will make you realize that you are making a call to the CreateUpdateFunctionSolution function. Since this is a ListFunction, you need to make sure that there is data in the DynamoDB table. First thing to do is to create an item. Then, run your freshly coded ListFunction and make sure that the that is returned isn't empty.
+- Inspect the code of the test, which will make you realize that you are making a call to the CreateUpdateFunctionSolution function. Since this is a ListFunction, you need to make sure that there is data in the DynamoDB table. First thing to do is to create an item. Then, run your freshly coded ListFunction and make sure that the ``List<Note>`` that is returned isn't empty.
     
 - Run the test.
     - Open the context menu for the ListFunctionTest.java file.
     - Select **Debug As > JUnit Test**.
-- You should see the output of the *CreateUpdateFunctionSolution* and then the beginning of your function in the Console View. If the Test successfully completes, the JUnit view should be all green. You can continue troubleshooting by using breakpoints and running the prior step again.
+- You should see the output of the *CreateUpdateFunctionSolution* and then the beginning of your function in the **Console** View. If the Test successfully completes, the **JUnit** view should be all green. You can continue troubleshooting by using breakpoints and running the prior step again.
 
 ```
 Initiating PollyNotes-CreateUpdateFunction...
@@ -440,14 +440,13 @@ In this task, you upload your Lambda function to Lambda. To do so, you will use 
 
 333. For **Select the AWS Region**, select the region for your lab as you noted it before.
 
-334. Select **Create a new Lambda function** and replace the value of the field next to it (containing MyFunction) with .
+334. Select **Create a new Lambda function** and replace the value of the field next to it (containing MyFunction) with ``PollyNotes-ListFunction``.
 335. Choose **Next**
-336. For **IAM Role**, select .
-337. For **S3 Bucket**, select your code Amazon S3 Bucket: 
+336. For **IAM Role**, select ``PollyNotesRole``.
+337. For **S3 Bucket**, select your code Amazon S3 Bucket:``polly-notes-code-<firstname>-<lastname>`` 
 338. In the **Memory (MB)** field, replace the content with **1024** so that your Lambda function can start faster on the first load.
 339. Choose **Finish**
 
-You have now uploaded your Lambda function!
 
 340. The next step is to test the Lambda function from the Lambda UI.
 341. From the **AWS Console**, choose Services and select **Lambda**.
@@ -457,9 +456,9 @@ This lab uses the **Updated Lambda Console**. If you are unsure which version yo
 342. Choose **PollyNotes-ListFunction**. If you don't see your function, make sure that you are in the correct Region.
 343. Choose the **Test** tab and make the following selections under **Test event:**
 
-   - .
-   - **Template:**
-   - **Event name**, enter:
+   - ``New event``.
+   - **Template:**``hello-world``
+   - **Event name**, enter:``ListTest``
    - Replace the JSON payload with the following:
 
     ```
@@ -469,8 +468,8 @@ This lab uses the **Updated Lambda Console**. If you are unsure which version yo
     
     ```
     
-344. Choose Save Changes
-345. Choose Test
+344. Choose **Save Changes**
+345. Choose **Test**
 346. There should be a green check mark just under the name of your Lambda function name with the message Execution result: succeeded (logs). Choose **Details** and you should see the output of your Lambda function listing a few notes that you have created in the DynamoDB section.
 
 For example:
@@ -509,11 +508,11 @@ There is a similar option labeled as **REST API Private**. Please be mindful not
 350. Under **Create new API**, select **New API**.
 351. Enter the following formation: 
 
-- **API name**, enter:
-- **Description**, enter:
-- **Endpoint Type**, select .
+- **API name**, enter:``PollyNotesAPI``
+- **Description**, enter:``PollyNotesAPI``
+- **Endpoint Type**, select ``Regional``.
 
-352. Choose Create API
+352. Choose **Create API**
 
 
 #### Task 8.1: (Java) - Creating the Amazon Cognito Authorizer
@@ -524,10 +523,10 @@ In this task, you create the Amazon Cognito Authorizer. The Authorizer will allo
 354. Choose + Create New Authorizer
 355. Enter the following information:
 
-   - **Name:**
-   - **Type:**
-   - **Cognito User Pool:**
-   - **Token Source:**
+   - **Name:**``PollyNotesPool``
+   - **Type:** ``Cognito``
+   - **Cognito User Pool:** ``PollyNotesPool``
+   - **Token Source:** ``Authorization``
    - **Token Validation**: Leave empty
 
 356. Choose **Create**
@@ -541,9 +540,9 @@ In this task, you create your API Resources.
 357. In the navigation pane, choose **Resources**.
 358. Under **Resources**, select **/**.
 359. Choose Actions , and then select **Create Resource**.
-360. Under **Resource Name**, enter the following: 
+360. Under **Resource Name**, enter the following: ``notes``
 
-The **Resource Path** will populate automatically with **notes**.
+🟧The **Resource Path** will populate automatically with **notes**.
 
 361. Choose Create Resource
 
@@ -552,12 +551,12 @@ Now that you have created your resource, you need to create your Methods.
 #### Task 8.3: (Java) - Creating the API GET method
 
 362. If not already selected, choose the **Resources** link and select **/notes**
-363. Choose Actions , and then select **Create Method**.
+363. Choose **Actions** , and then select **Create Method**.
 364. Select **GET** and then choose the (check mark tick).
 365. For **Integration type**, select **Lambda Function**.
-366. Under **Lambda Function**, type an uppercase , then select your Lambda **PollyNotes-ListFunction**.
-367. Choose Save
-368. In the **Add Permission to Lambda Function** dialog box, choose OK
+366. Under **Lambda Function**, type an uppercase ``P``, then select your Lambda **PollyNotes-ListFunction**.
+367. Choose **Save**
+368. In the **Add Permission to Lambda Function** dialog box, choose **OK**
 369. Choose **Method Request**
 370. In the **Settings** section, next to **Authorization**, choose (Edit).
 371. Select **PollyNotesPool** and then, choose (check mark tick).
@@ -566,7 +565,7 @@ Now that you have created your resource, you need to create your Methods.
 374. Expand the **Mapping Templates** section.
 375. Select **When there are no templates defined (recommended).**
 376. Under **Content-Type**, choose **Add mapping template**
-377. Enter and choose (check mark tick).
+377. Enter ``application/json`` and choose (check mark tick).
 378. In the box that appeared below, enter the following:
 
 ```
@@ -575,29 +574,29 @@ Now that you have created your resource, you need to create your Methods.
 }
 ```
 
-You are hard coding the value of userId here so that when you do your first test from the web interface, you can see the original notes you have created in DynamoDB. Since you won't be creating the CreateUpdate Function until after doing your test, you would have no way to create a note for your user. The first step once you are done fully testing the List function, will be to change this mapping template to be dynamic based on the Amazon Cognito ID of the user login.
+🟧You are hard coding the value of _userId_ here so that when you do your first test from the web interface, you can see the original notes you have created in DynamoDB. Since you won't be creating the CreateUpdate Function until after doing your test, you would have no way to create a note for your user. The first step once you are done fully testing the List function, will be to change this mapping template to be dynamic based on the Amazon Cognito ID of the user login.
 
-379. Choose Save
+379. Choose **Save**
 380. Choose the **/notes** resource.
-381. Choose Actions and select **Enable CORS**.
+381. Choose **Actions** and select **Enable CORS**.
 382. Under **Gateway Responses for PollyNotes API**, check option for **DEFAULT 4XX** and **DEFAULT 5XX**.
-383. Choose Enable CORS and replace existing CORS headers
-384. In the **Confirm method changes** dialog box, choose Yes, replace existing values
-385. Choose Actions , then select **Deploy API**. Make the following updates:
+383. Choose **Enable CORS and replace existing CORS headers**
+384. In the **Confirm method changes** dialog box, choose **Yes, replace existing values**
+385. Choose **Actions**, then select **Deploy API**. Make the following updates:
 
-- **Deployment stage:**
-- **Stage name: **
+- **Deployment stage:** ``[New Stage]``
+- **Stage name: **``prod``
 
-386. Choose Deploy
+386. Choose **Deploy**
 387. Copy the **Invoke URL** and paste it into a file. You will need it later in the lab.
 388. In the **prod Stage Editor**, choose the **Logs/Tracing** tab and make the following updates:
 
 - **CloudWatch Settings**
     - **Enable CloudWatch Logs**
-    - **Log level**
+    - **Log level** ``INFO``
     - **Log full requests/responses data**
 
-389. Choose Save Changes
+389. Choose **Save Changes**
 
 ### Task 9: (Java) - Creating the front-end website
 
@@ -605,7 +604,8 @@ In this task, you create the front-end website.
 
 390. Download and extract the following zip file:
 
-**Source file: ![ZIP FILE]()
+**Source file: ZIP FILE [polly-notes-web-bucket-root.zip](https://github.com/keerthik26/amazon-polly-notes/files/7109958/polly-notes-web-bucket-root.zip)
+
 
 391. Modify the *main.bundle.js* file (lines 2-4) and change the following values:
 
@@ -624,10 +624,10 @@ You should have noted the needed values from prior lab steps. If you do not have
 392. Save the changes to the file.
 393. Next, you need to enable CORS on the MP3 Bucket. When users access your website, they will be loading the website from the static Website bucket. Then, they will use javascript in their browser to connect to two different endpoints; API Gateway and the MP3 bucket. You already enabled CORS on the API Gateway, but you now need to enable CORS on your MP3 bucket, so that it can set response headers.
 394. From the browser tab logged into the **Amazon Management Console**, choose Services and select **Amazon S3**.
-395. Choose your bucket.
+395. Choose your ``polly-notes-mp3-<firstname>-<lastname>`` bucket.
 396. Choose the **Permissions** tab.
-397. Navigate down to the **Cross-origin resource sharing (CORS)** section, then click Edit
-398. Copy and paste the following JSON code into the text box, then choose Save changes
+397. Navigate down to the **Cross-origin resource sharing (CORS)** section, then click **Edit**
+398. Copy and paste the following JSON code into the text box, then choose **Save changes**
 
 ```
 [
@@ -647,28 +647,28 @@ You should have noted the needed values from prior lab steps. If you do not have
 
 ```
 
-399. Next, go to your Website bucket. In the breadcrumb trail, choose **Amazon S3**, and then, choose your bucket.
-400. Choose Upload
-401. Upload all the files and folders in the folder named (not the folder itself) by dragging them onto the upload window.
+399. Next, go to your Website bucket. In the breadcrumb trail, choose **Amazon S3**, and then, choose your ``polly-notes-web-<firstname>-<lastname>`` bucket.
+400. Choose **Upload**
+401. Upload all the files and folders in the folder named ``polly-notes-web-bucket-root`` (not the folder itself) by dragging them onto the upload window.
 
 ![drag](https://user-images.githubusercontent.com/22528198/132087733-28e74f35-8d8e-477c-bead-03fb0f773704.png)
 
-402. Move to the bottom of the screen, and choose Upload
-403. Once the files and folders have uploaded successfully (32 total), choose Close
+402. Move to the bottom of the screen, and choose **Upload**
+403. Once the files and folders have uploaded successfully (32 total), choose **Close**
 
 ![files-example](https://user-images.githubusercontent.com/22528198/132087763-d2c27a53-97b1-4ad4-8ab5-8e4e53c9c7ca.png)
 
-There should be a combined total of **10 files and folders** in the **root** of the Amazon S3 bucket.
+There should be a combined total of **10 files and folders** in the **root** of the ``polly-notes-web-<firstname>-<lastname>`` Amazon S3 bucket.
 
 404. Choose the **Permissions** tab.
 405. In the **Block public access (bucket settings)** card choose Edit
 406. Unselect **Block** *all* **public access**.
-407. Choose Save changes
-408. A confirmation box will appear; type and choose Confirm
-409. Move down to the **Bucket policy** card and choose Edit
+407. Choose **Save changes**
+408. A confirmation box will appear; type ``confirm`` and choose **Confirm**
+409. Move down to the **Bucket policy** card and choose **Edit**
 410. Copy and paste the following bucket policy into the **Bucket policy** field.
 
-Ensure that you replace your bucket name.
+⚠️Ensure that you replace your bucket name.
 
 ```
 {
@@ -687,16 +687,16 @@ Ensure that you replace your bucket name.
 ```
 
 411. Choose Save changes
-412. The description of your bucket should now be flagged with Publicly accessible and the **Permissions overview** card will read **Access** as
-Public
+412. The description of your bucket should now be flagged with **Publicly accessible** and the **Permissions overview** card will read **Access** as
+⚠️Public
 413. Choose the **Properties** tab.
-414. In the **Static website hosting** card, choose Edit
+414. In the **Static website hosting** card, choose **Edit**
 
 Configure the following settings:
 
 - **Static website hosting:** Enable
-- **Index document: **
-- **Error document:**
+- **Index document: **``index.html``
+- **Error document:**``error.html``
 
 415. Choose Save changes
 416. Move to the **Static website hosting** card and copy your *Bucket website endpoint* URL to a text editor.
@@ -707,7 +707,7 @@ You will use this again in the lab.
 
 In this task, you test the web application by loading your Amazon S3 Hosted URL.
 
-You can obtain your Amazon S3 Hosted URL by going into the Amazon S3 Console. Select your web hosting bucket. Choose the **Properties** tab, and then choose, **Static website hosting**.
+🟧You can obtain your Amazon S3 Hosted URL by going into the Amazon S3 Console. Select your web hosting bucket. Choose the **Properties** tab, and then choose, **Static website hosting**.
 
 417. In a browser, enter your Static website hosting URL.
 418. You should be presented with a login page.
@@ -715,8 +715,8 @@ You can obtain your Amazon S3 Hosted URL by going into the Amazon S3 Console. Se
 <img width="947" alt="pollynotes-loginpage" src="https://user-images.githubusercontent.com/22528198/131252081-16d9abe0-d29f-48a0-aa4f-9db65857c037.png">
 
 419. Login with the following:
-- For **UserName**, enter: 
-- For **Password**, enter: 
+- For **UserName**, enter: ``student``
+- For **Password**, enter:  ``student``
 
 420. You should be presented with a page that looks like the following:
 
@@ -730,7 +730,7 @@ Now that the ListFunction is working end-to-end, you need to create the rest of 
 
 ![lab-6-diagram6-2020](https://user-images.githubusercontent.com/22528198/131252165-72a5a6a8-002c-4ad8-81af-41e5ac552bbe.png)
 
-Download the following ZIP file to your laptop: ![PollyNotes-JavaSolutionFunctions]().
+Download the following ZIP file to your laptop: PollyNotes-JavaSolutionFunctions[PollyNotes-JavaSolutionFunctions.zip](https://github.com/keerthik26/amazon-polly-notes/files/7110019/PollyNotes-JavaSolutionFunctions.zip).
 
 #### Task 11.1: (Java) - Creating the Lambda DictateFunction
 
@@ -738,7 +738,13 @@ In this task, you work with the Lambda DictateFunction. This function is already
 
 This lab uses the **Updated Lambda Console**.
 
+**Function**: ``PollyNotes-DictateFunction``
+**Handler**: ``com.amazonaws.pollynotes.functions.DictateFunction``
+
+
 422. From the browser tab logged into the **Amazon Management Console**, choose Services and select **Lambda**.
+
+**Test Name:** ``DictateTest``
 
 436. Replace the JSON payload with the following: (492)
 ```
@@ -764,6 +770,12 @@ Congratulations! You have now created your Lambda Dictate function.
 
 #### Task 11.2: (Java) - Creating the Lambda CreateUpdateFunction
 
+``PollyNotes-CreateUpdateFunction``
+
+``com.amazonaws.pollynotes.solution.CreateUpdateFunctionSolution``
+
+``CreateUpdateTest``
+
 455. Replace the JSON payload with the following: (492)
 
 ```
@@ -780,6 +792,12 @@ Congratulations! You have now created your Lambda CreateUpdate function.
 
 #### Task 11.3: (Java) - Creating the Lambda SearchFunction
 
+``PollyNotes-SearchFunction``
+
+``com.amazonaws.pollynotes.solution.SearchFunctionSolution``
+
+Test Name: ``SearchTest``
+
 473. Replace the JSON payload with the following: (492)
 
 ```
@@ -791,7 +809,7 @@ Congratulations! You have now created your Lambda CreateUpdate function.
 
 476. Choose the **Details** link under that text. (495)
 
-You should see the output of your Lambda function listing a the note you just searched for using the keyword that was just created in your previous CreateUpdateFunction.
+You should see the output of your Lambda function listing a the note you just searched for using the  ``very`` keyword that was just created in your previous CreateUpdateFunction.
 
 ```
 [
@@ -811,12 +829,12 @@ Congratulations! You have now created your LambdaSearch function.
 478. Choose **Create function** and make the following updates:
 
 - **Author from scratch**
-- **Function name:**
-- **Runtime:**
+- **Function name:**``PollyNotes-DeleteFunction``
+- **Runtime:**``Java 8``
 - **Permissions:**
     - Expand **Change default execution role.**
-    - **Execution role:**
-    - **Existing role:**
+    - **Execution role:**``Use an existing role``
+    - **Existing role:** ``PollyNotesRole``
 
 479. Choose **Create function**
 
@@ -824,25 +842,25 @@ Congratulations! You have now created your LambdaSearch function.
 
 480. In the **Code source** section, choose Upload from , select **Upload a .zip or .jar file**, and then choose the Upload button. Locate the *PollyNotes-JavaSolutionFunctions.zip* file that you downloaded in the previous section and choose Save
 481. Scroll down to the **Runtime settings** card, choose Edit and enter the following details:
-- **Handler:**
+- **Handler:** ``com.amazonaws.pollynotes.solution.DeleteFunctionSolution``
 482. Choose Save
 483. Choose the **Configuration** tab.
 484. Choose **Environment variables** from the options on the left and then choose Edit
 485. Choose Add environment variable
 486. Add the following values:
 
-  - **Key:**
-  - **Value:** (Update with your bucket name.)
+  - **Key:** ``MP3_BUCKET_NAME``
+  - **Value:** ``polly-notes-mp3-<firstname>-<lastname>`` (Update with your bucket name.)
  
 487. Choose Save
 488. Choose **General configuration** from the list on the left, then choose Edit and make the following update:
- - **Memory (MB):** (so that your Lambda function can start faster on the first load)
+ - **Memory (MB):** ``1024MB`` (so that your Lambda function can start faster on the first load)
 489. Choose Save
 490. Now test the function. Choose the **Test** tab and configure the following fields under **Test event**:
 
-- X
-- **Template**:
-- **Name**:
+- ``New event``
+- **Template**: ``hello-world``
+- **Name**: ``DeleteTest``
 
 492. Replace the JSON payload with the following:
 
@@ -852,8 +870,8 @@ Congratulations! You have now created your LambdaSearch function.
     "noteId": "001"
 }
 ```
-493. Choose Save changes
-494. Choose Test
+493. Choose **Save changes**
+494. Choose **Test**
 
 *It is normal for it to take a little longer as this is the first time you are running your Lambda function.*
 
@@ -861,7 +879,7 @@ Congratulations! You have now created your LambdaSearch function.
 
 495. Choose the **Details** link under that text. 
 
-You should see the output of your Lambda function providing the noteId that you just deleted. For example, .
+You should see the output of your Lambda function providing the noteId that you just deleted. For example, ``"001"``.
  
 
 ### Task 12: (Java) - Creating the remaining Restful API
@@ -870,7 +888,7 @@ In this task, you create the remaining Restful API.
 
 ![lab-6-diagram-2020](https://user-images.githubusercontent.com/22528198/131252279-3ea1752f-a912-4ecb-8b33-0da869868245.png)
 
-496. From the browser tab logged into the **Amazon Management Console**, choose Services and select **API Gateway**.
+496. From the browser tab logged into the **Amazon Management Console**, choose **Services** and select **API Gateway**.
 497. Choose **PollyNotesAPI.**
 498. Choose the **/notes/GET** method.
 499. Choose **Integration Request**
@@ -882,28 +900,28 @@ In this task, you create the remaining Restful API.
     "userId": "$context.authorizer.claims.sub"
 }
 ```
-*You are now removing the hard coded value of testuser to a variable that is dynamically populated based on your authorizer. In this case, the authorizer is Amazon Cognito. This means, userId will now be set to the value of the Amazon Cognito ID of the user login.*
+🟧You are now removing the hard coded value of _testuser_ to a variable that is dynamically populated based on your authorizer. In this case, the authorizer is Amazon Cognito. This means, _userId_ will now be set to the value of the Amazon Cognito ID of the user login.
 
-503. Choose Save
+503. Choose **Save**
 504. Download the following Swagger file (API-Gateway-for-students-swagger.yaml):
 
  Source file: ![SWAGGER]()
  
 505. Modify **line 11** of the file to replace it with your **Amazon Cognito User Pool ARN** (in between the quotes "").
 506. **Save** the file.
-507. Choose Actions and select **Import API**.
+507. Choose **Actions** and select **Import API**.
 508. Navigate to the bottom of the page and change the **Import mode** to **Merge**.
 
-Be mindful not to select .
+Be mindful not to select ``Overwrite``.
 
-509. Choose Select Swagger File and then select your saved Swagger file.
-510. Choose Import
+509. Choose Select **Swagger File** and then select your saved Swagger file.
+510. Choose **Import**
 
 *The Swagger file created the additional resources and methods for your API. You still need to integrate the Methods with your Lambda functions.*
 
-511. Choose the /notes/POST method.
+511. Choose the **/notes/POST** method.
 
-*If you encounter an error reading, You do not have permission to perform this action. you can ignore it.*
+*If you encounter an error reading, **You do not have permission to perform this action**. you can ignore it.*
 
 *The reason for this error is due to the swagger file specifying a mock function from another region. API Gateway tries to pull it up and returns the error because you do not have permissions to that region.*
 
