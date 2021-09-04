@@ -369,12 +369,12 @@ Java is a strong type language which means that receiving JSON isn't as easy to 
 
 The input from Lambda will look similar to the following:
 
-```
+````
 {
     "userId": "testuser"
 }
 
-```
+````
    - It may look difficult to parse at first glance, however the Lambda Java core will do the work for you by serializing this JSON into a Note object that will have its userId property set and that you receive as an argument to your Lambda function as you can see in the function you need to develop below.
 
 ```
@@ -397,7 +397,7 @@ public List<Note> handleRequest(Note note, Context context) ...
     }
   ]
     
-````
+```
     
    - There are comments in the code to give you some help. However, it is your responsibility to make good use of those comments or to do it on your own. There are many ways to Query DynamoDB and the Solution Code makes use of the Object Persistence Model that was discussed in the class. You should take a look at the following:
     - Query and Scan
@@ -568,11 +568,11 @@ Now that you have created your resource, you need to create your Methods.
 377. Enter and choose (check mark tick).
 378. In the box that appeared below, enter the following:
 
-``
+```
 {
     "userId": "testuser"
 }
-``
+```
 
 You are hard coding the value of userId here so that when you do your first test from the web interface, you can see the original notes you have created in DynamoDB. Since you won't be creating the CreateUpdate Function until after doing your test, you would have no way to create a note for your user. The first step once you are done fully testing the List function, will be to change this mapping template to be dynamic based on the Amazon Cognito ID of the user login.
 
@@ -608,12 +608,12 @@ In this task, you create the front-end website.
 
 391. Modify the *main.bundle.js* file (lines 2-4) and change the following values:
 
-``
+```
 // Change the following 3 variable's value
 var API_GATEWAY_INVOKE_URL = "https://your-api-url"
 var COGNITO_POOL_ID = 'us-east-1-xxxxxxxxxxx'
 var COGNITO_APP_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-``
+```
 You should have noted the needed values from prior lab steps. If you do not have details, you can get them by using the Console and the following paths:
 
 - **Services -> API Gateway -> PollyNotesAPI -> Stages -> prod (API Gateway Invoke URL)**
@@ -628,7 +628,7 @@ You should have noted the needed values from prior lab steps. If you do not have
 397. Navigate down to the **Cross-origin resource sharing (CORS)** section, then click Edit
 398. Copy and paste the following JSON code into the text box, then choose Save changes
 
-``
+```
 [
     {
         "AllowedHeaders": [
@@ -644,7 +644,7 @@ You should have noted the needed values from prior lab steps. If you do not have
     }
 ]
 
-``
+```
 
 399. Next, go to your Website bucket. In the breadcrumb trail, choose **Amazon S3**, and then, choose your bucket.
 400. Choose Upload
@@ -669,7 +669,7 @@ There should be a combined total of **10 files and folders** in the **root** of 
 
 Ensure that you replace your bucket name.
 
-``
+```
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -683,7 +683,7 @@ Ensure that you replace your bucket name.
     ]
 }
 
-``
+```
 
 411. Choose Save changes
 412. The description of your bucket should now be flagged with Publicly accessible and the **Permissions overview** card will read **Access** as
@@ -740,7 +740,7 @@ This lab uses the **Updated Lambda Console**.
 422. From the browser tab logged into the **Amazon Management Console**, choose Services and select **Lambda**.
 
 436. Replace the JSON payload with the following: (492)
-``
+```
 {
     "voiceId": "Russell",
     "note": {
@@ -748,13 +748,13 @@ This lab uses the **Updated Lambda Console**.
         "noteId": "001"
     }
 }
-``
+```
 439. Choose the **Details** link under that text. You should see the output of your Lambda function providing a very long URL to your MP3 bucket which represents a pre-signed URL.
 
 For example:
-``
+```
 "https://polly-notes-mp3-<firstname>-<lastname>.s3.amazonaws.com/testuser/001.mp3?X-Amz-Security-Token=..."
-``
+```
 
 440. Copy and paste that URL in your browser. It will have you download an mp3. Open the file to listen to Russell dictating your note!
 
@@ -765,13 +765,13 @@ Congratulations! You have now created your Lambda Dictate function.
 
 455. Replace the JSON payload with the following: (492)
 
-``
+```
 {
     "userId": "testuser",
     "noteId": "001",
     "note": "My very new note to myself"
 }
-``
+```
 
 458. Choose the **Details** link under that text. You should see the output of your Lambda function providing the noteId that you just uploaded. For example, 
 
@@ -845,12 +845,12 @@ Congratulations! You have now created your LambdaSearch function.
 
 492. Replace the JSON payload with the following:
 
-``
+```
 {
     "userId": "testuser",
     "noteId": "001"
 }
-``
+```
 493. Choose Save changes
 494. Choose Test
 
@@ -876,11 +876,11 @@ In this task, you create the remaining Restful API.
 500. Navigate to the bottom and expand **Mapping Templates**.
 501. Choose **application/json**.
 502. Move down and replace the mapping template with the following:
-``
+```
 {
     "userId": "$context.authorizer.claims.sub"
 }
-``
+```
 *You are now removing the hard coded value of testuser to a variable that is dynamically populated based on your authorizer. In this case, the authorizer is Amazon Cognito. This means, userId will now be set to the value of the Amazon Cognito ID of the user login.*
 
 503. Choose Save
@@ -914,11 +914,11 @@ Be mindful not to select .
 
 - If the name is correct, choose **OK** to accept and allow invocation permissions to be created and your trigger to be setup.
 - If it reads as the **Mock** function name, we have to do a couple additional steps to workaround this UI issue.
-- - Choose **OK**.
-- - Choose **Resources** link on the left to leave that section.
-- - Next choose the appropriate method and select **Integration Request** and repeat the instructions as normal.
-- - You should see that the region is set correctly but the **Lambda Function** is pointing to **arn:aws:lambda:us-west-2:012345678901:function:Mock** and needs to be updated.
-- - There appears to be a bug with the API Gateway UI that causes this issue. It should be resolved soon. Until then, this is the workaround.
+    - Choose **OK**.
+    - Choose **Resources** link on the left to leave that section.
+    - Next choose the appropriate method and select **Integration Request** and repeat the instructions as normal.
+    - You should see that the region is set correctly but the **Lambda Function** is pointing to **arn:aws:lambda:us-west-2:012345678901:function:Mock** and needs to be updated.
+    - There appears to be a bug with the API Gateway UI that causes this issue. It should be resolved soon. Until then, this is the workaround.
 
 517. Repeat these steps for the remaining methods with the following mappings:
 
