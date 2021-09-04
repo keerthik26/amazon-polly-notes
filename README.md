@@ -171,10 +171,10 @@ You could connect to your Windows Dev Instance and open a PowerShell session to 
 269. Choose **Connect**
 270. Enter the following command, but make sure to change **change-me_app-client-id** with the value of the **App client id** that you copied to a file earlier:
 
-``` 
+```markdown 
 aws cognito-idp sign-up --client-id change-me_app-client-id --username student --password student
 
-**Expected output:**
+**Expected output**:
 
 {
     "UserConfirmed": false,
