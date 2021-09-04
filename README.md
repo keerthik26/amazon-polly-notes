@@ -171,7 +171,7 @@ You could connect to your Windows Dev Instance and open a PowerShell session to 
 269. Choose **Connect**
 270. Enter the following command, but make sure to change **change-me_app-client-id** with the value of the **App client id** that you copied to a file earlier:
 
-``` markdown
+``` 
 aws cognito-idp sign-up --client-id change-me_app-client-id --username student --password student
 
 **Expected output:**
@@ -189,9 +189,9 @@ You have now created a user in Amazon Cognito with the username and a password o
 
 To confirm the user, enter the following command:
 
-`
+```
 aws cognito-idp admin-confirm-sign-up --user-pool-id change-me_pool-id --username student
-`
+```
 If you don't see any output, it means that the command is successful and you can continue.
 
 If the EC2 Instance Connect SSH session stops responding, hit the browser refresh button to re-initialize it.
@@ -369,12 +369,12 @@ Java is a strong type language which means that receiving JSON isn't as easy to 
 
 The input from Lambda will look similar to the following:
 
-````
+```
 {
     "userId": "testuser"
 }
 
-````
+```
    - It may look difficult to parse at first glance, however the Lambda Java core will do the work for you by serializing this JSON into a Note object that will have its userId property set and that you receive as an argument to your Lambda function as you can see in the function you need to develop below.
 
 ```
