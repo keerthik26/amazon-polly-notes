@@ -397,18 +397,211 @@ In this task, you will create a Restful API to front the back-end Lambda functio
 
 ![lab-6-diagram5-2020](https://user-images.githubusercontent.com/22528198/131251981-5c13bee7-7f47-4bb0-a852-68c79a88e95c.png)
 
+347. From the browser tab logged into the **Amazon Management Console**, choose Services and select **API Gateway**.
+
+Verify that you are in the **correct region**. If you are unsure of the region, you can see it identified in the **Lab Information** section to the left of these instructions.
+
+348. Under **Choose an API type**, select Build from the **REST API** card.
+
+There is a similar option labeled as **REST API Private**. Please be mindful not to select this option.
+
+349. In the **Create your first API** dialog box, choose OK
+350. Under **Create new API**, select **New API**.
+351. Enter the following formation: 
+
+- **API name**, enter:
+- **Description**, enter:
+- **Endpoint Type**, select .
+
+352. Choose Create API
+
 
 #### Task 8.1: (Java) - Creating the Amazon Cognito Authorizer
 
 In this task, you create the Amazon Cognito Authorizer. The Authorizer will allow you to control access to the API with the Amazon Cognito User Pool.
 
+353. In the left navigation menu, choose **Authorizers**.
+354. Choose + Create New Authorizer
+355. Enter the following information:
+
+   - **Name:**
+   - **Type:**
+   - **Cognito User Pool:**
+   - **Token Source:**
+   - **Token Validation**: Leave empty
+
+356. Choose **Create**
+
 #### Task 8.2: (Java) - Creating the resources
 
 In this task, you create your API Resources.
 
+![lab-6-diagram5-2020](https://user-images.githubusercontent.com/22528198/132088564-77268a69-c0d5-4fd8-bdc7-12dc510b77a6.png)
+
+357. In the navigation pane, choose **Resources**.
+358. Under **Resources**, select **/**.
+359. Choose Actions , and then select **Create Resource**.
+360. Under **Resource Name**, enter the following: 
+
+The **Resource Path** will populate automatically with **notes**.
+
+361. Choose Create Resource
+
+Now that you have created your resource, you need to create your Methods.
+
 #### Task 8.3: (Java) - Creating the API GET method
 
+362. If not already selected, choose the **Resources** link and select **/notes**
+363. Choose Actions , and then select **Create Method**.
+364. Select **GET** and then choose the (check mark tick).
+365. For **Integration type**, select **Lambda Function**.
+366. Under **Lambda Function**, type an uppercase , then select your Lambda **PollyNotes-ListFunction**.
+367. Choose Save
+368. In the **Add Permission to Lambda Function** dialog box, choose OK
+369. Choose **Method Request**
+370. In the **Settings** section, next to **Authorization**, choose (Edit).
+371. Select **PollyNotesPool** and then, choose (check mark tick).
+372. In the breadcrumb, choose <- **Method Execution**
+373. Choose **Integration Request**
+374. Expand the **Mapping Templates** section.
+375. Select **When there are no templates defined (recommended).**
+376. Under **Content-Type**, choose **Add mapping template**
+377. Enter and choose (check mark tick).
+378. In the box that appeared below, enter the following:
+
+``
+{
+    "userId": "testuser"
+}
+``
+
+You are hard coding the value of userId here so that when you do your first test from the web interface, you can see the original notes you have created in DynamoDB. Since you won't be creating the CreateUpdate Function until after doing your test, you would have no way to create a note for your user. The first step once you are done fully testing the List function, will be to change this mapping template to be dynamic based on the Amazon Cognito ID of the user login.
+
+379. Choose Save
+380. Choose the **/notes** resource.
+381. Choose Actions and select **Enable CORS**.
+382. Under **Gateway Responses for PollyNotes API**, check option for **DEFAULT 4XX** and **DEFAULT 5XX**.
+383. Choose Enable CORS and replace existing CORS headers
+384. In the **Confirm method changes** dialog box, choose Yes, replace existing values
+385. Choose Actions , then select **Deploy API**. Make the following updates:
+
+- **Deployment stage:**
+- **Stage name: **
+
+386. Choose Deploy
+387. Copy the **Invoke URL** and paste it into a file. You will need it later in the lab.
+388. In the **prod Stage Editor**, choose the **Logs/Tracing** tab and make the following updates:
+
+- **CloudWatch Settings**
+    - **Enable CloudWatch Logs**
+    - **Log level**
+    - **Log full requests/responses data**
+
+389. Choose Save Changes
+
 ### Task 9: (Java) - Creating the front-end website
+
+In this task, you create the front-end website.
+
+390. Download and extract the following zip file:
+
+**Source file: ![ZIP FILE]()
+
+391. Modify the *main.bundle.js* file (lines 2-4) and change the following values:
+
+``
+// Change the following 3 variable's value
+var API_GATEWAY_INVOKE_URL = "https://your-api-url"
+var COGNITO_POOL_ID = 'us-east-1-xxxxxxxxxxx'
+var COGNITO_APP_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+``
+You should have noted the needed values from prior lab steps. If you do not have details, you can get them by using the Console and the following paths:
+
+- **Services -> API Gateway -> PollyNotesAPI -> Stages -> prod (API Gateway Invoke URL)**
+- **Services -> Cognito -> Manage User Pools -> PollyNotesPool (Cognito Pool ID)**
+- **Services -> Cognito -> Manage User Pools -> PollyNotesPool -> App clients (Cognito App client ID)**
+
+392. Save the changes to the file.
+393. Next, you need to enable CORS on the MP3 Bucket. When users access your website, they will be loading the website from the static Website bucket. Then, they will use javascript in their browser to connect to two different endpoints; API Gateway and the MP3 bucket. You already enabled CORS on the API Gateway, but you now need to enable CORS on your MP3 bucket, so that it can set response headers.
+394. From the browser tab logged into the **Amazon Management Console**, choose Services and select **Amazon S3**.
+395. Choose your bucket.
+396. Choose the **Permissions** tab.
+397. Navigate down to the **Cross-origin resource sharing (CORS)** section, then click Edit
+398. Copy and paste the following JSON code into the text box, then choose Save changes
+
+``
+[
+    {
+        "AllowedHeaders": [
+            "*"
+        ],
+        "AllowedMethods": [
+            "GET"
+        ],
+        "AllowedOrigins": [
+            "*"
+        ],
+        "ExposeHeaders": []
+    }
+]
+
+``
+
+399. Next, go to your Website bucket. In the breadcrumb trail, choose **Amazon S3**, and then, choose your bucket.
+400. Choose Upload
+401. Upload all the files and folders in the folder named (not the folder itself) by dragging them onto the upload window.
+
+![drag](https://user-images.githubusercontent.com/22528198/132087733-28e74f35-8d8e-477c-bead-03fb0f773704.png)
+
+402. Move to the bottom of the screen, and choose Upload
+403. Once the files and folders have uploaded successfully (32 total), choose Close
+
+![files-example](https://user-images.githubusercontent.com/22528198/132087763-d2c27a53-97b1-4ad4-8ab5-8e4e53c9c7ca.png)
+
+There should be a combined total of **10 files and folders** in the **root** of the Amazon S3 bucket.
+
+404. Choose the **Permissions** tab.
+405. In the **Block public access (bucket settings)** card choose Edit
+406. Unselect **Block** *all* **public access**.
+407. Choose Save changes
+408. A confirmation box will appear; type and choose Confirm
+409. Move down to the **Bucket policy** card and choose Edit
+410. Copy and paste the following bucket policy into the **Bucket policy** field.
+
+Ensure that you replace your bucket name.
+
+``
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::polly-notes-web-<firstname>-<lastname>/*"
+        }
+    ]
+}
+
+``
+
+411. Choose Save changes
+412. The description of your bucket should now be flagged with Publicly accessible and the **Permissions overview** card will read **Access** as
+Public
+413. Choose the **Properties** tab.
+414. In the **Static website hosting** card, choose Edit
+
+Configure the following settings:
+
+- **Static website hosting:** Enable
+- **Index document: **
+- **Error document:**
+
+415. Choose Save changes
+416. Move to the **Static website hosting** card and copy your *Bucket website endpoint* URL to a text editor.
+
+You will use this again in the lab.
 
 ### Task 10: (Java) - Testing the web application
 
